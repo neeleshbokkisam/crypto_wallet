@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Details</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h1>Wallet Details</h1>
+    <p><strong>Address:</strong> <%= wallet.address %></p>
+    <% if (wallet.privateKey) { %>
+        <p><strong>Private Key:</strong> <%= wallet.privateKey %></p>
+    <% } %>
+    <p><strong>Balance:</strong> <%= balance %> ETH</p>
+
+    <h2>Transaction History</h2>
+    <% if (transactions.length > 0) { %>
+        <ul>
+        <% transactions.forEach(tx => { %>
+            <li>
+                <strong>Hash:</strong> <%= tx.hash %><br>
+                <strong>From:</strong> <%= tx.from %><br>
+                <strong>To:</strong> <%= tx.to %><br>
+                <strong>Value:</strong> <%= ethers.utils.formatEther(tx.value) %> ETH<br>
+                <strong>Date:</strong> <%= new Date(tx.timeStamp * 1000).toLocaleString() %>
+            </li>
+        <% }) %>
+        </ul>
+    <% } else { %>
+        <p>No transactions found for this address.</p>
+    <% } %>
+</body>
+</html>

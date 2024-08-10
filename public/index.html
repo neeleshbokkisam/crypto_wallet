@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Wallet</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Welcome to the Crypto Wallet App</h1>
+
+    <h2>Generate a New Wallet</h2>
+    <a href="/wallet">Generate a Wallet</a>
+
+    <h2>Check Transaction History</h2>
+    <form action="/check-wallet" method="get">
+        <label for="address">Enter Ethereum Address:</label><br>
+        <input type="text" id="address" name="address" required><br><br>
+        <input type="submit" value="Check History">
+    </form>
+</body>
+</html>
