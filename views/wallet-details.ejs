@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <h1>Details for Wallet: <%= walletName %></h1>
+    <h1>Details for Wallet: <%= wallet.name %></h1>
     <p><strong>Address:</strong> <%= wallet.address %></p>
+    <p><strong>Metadata:</strong> <%= wallet.metadata || 'None' %></p>
     <p><strong>Balance:</strong> <%= balance %> ETH</p>
 
     <h2>Transaction History</h2>

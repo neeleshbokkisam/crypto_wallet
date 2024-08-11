@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Wallets</title>
     <link rel="stylesheet" href="/style.css">
+    <style>
+        .wallet-container {
+            margin-bottom: 20px;
+        }
+        .wallet-item {
+            list-style-type: decimal;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .wallet-item p, .wallet-item form {
+            margin: 5px 0;
+        }
+        .wallet-item a {
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Manage Your Wallets</h1>
@@ -15,18 +32,40 @@
         <input type="text" id="walletName" name="walletName" required><br><br>
         <label for="privateKey">Private Key:</label><br>
         <input type="text" id="privateKey" name="privateKey" required><br><br>
+        <label for="metadata">Name:</label><br>
+        <textarea id="metadata" name="metadata"></textarea><br><br>
         <input type="submit" value="Add Wallet">
     </form>
 
     <h2>Your Wallets</h2>
-    <% if (Object.keys(wallets).length > 0) { %>
-        <ul>
-        <% for (let name in wallets) { %>
-            <li>
-                <a href="/wallet-details?walletName=<%= name %>"><%= name %></a>
+    <% if (wallets.length > 0) { %>
+        <ol class="wallet-container"> <!-- Changed to ordered list for numbering -->
+        <% wallets.forEach(wallet => { %>
+            <li class="wallet-item">
+                <p>
+                    <a href="/wallet-details?id=<%= wallet.id %>">
+                    <%= wallet.metadata %>
+                    </a>
+                </p>
+                <p><strong>Wallet Name:</strong> <%= wallet.name %></p>
+                <p><strong>Key:</strong> <%= wallet.privateKey %></p>
+
+                <!-- Edit metadata name form -->
+                <form action="/edit-metadata" method="post">
+                    <label for="newMetadata<%= wallet.id %>">Change Name:</label><br>
+                    <input type="text" id="newMetadata<%= wallet.id %>" name="newMetadata" value="<%= wallet.metadata %>"><br><br>
+                    <input type="hidden" name="walletId" value="<%= wallet.id %>">
+                    <input type="submit" value="Update Name">
+                </form>
+
+                <!-- Delete button form below the key -->
+                <form action="/delete-wallet" method="post">
+                    <input type="hidden" name="walletId" value="<%= wallet.id %>">
+                    <button type="submit">Delete</button>
+                </form>
             </li>
-        <% } %>
-        </ul>
+        <% }) %>
+        </ol>
     <% } else { %>
         <p>No wallets added yet.</p>
     <% } %>
