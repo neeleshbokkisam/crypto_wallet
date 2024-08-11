@@ -16,46 +16,46 @@ app.get('/', (req, res) => {
 
 // Generate new wallet route
 app.get('/wallet', async (req, res) => {
-  try {
-    const wallet = ethers.Wallet.createRandom();
-    const address = wallet.address;
-
-    const balanceUrl = `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=${etherscanApiKey}`;
-    const balanceResponse = await axios.get(balanceUrl);
-    const balance = ethers.formatEther(balanceResponse.data.result);
-
-    const txHistoryUrl = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${etherscanApiKey}`;
-    const txHistoryResponse = await axios.get(txHistoryUrl);
-    const transactions = txHistoryResponse.data.result;
-
-    // Pass ethers to the template
-    res.render('result.ejs', { wallet, balance, transactions, ethers });
-  } catch (error) {
-    console.error('Error occurred:', error);
-    res.status(500).send('Error generating wallet or fetching data');
-  }
-});
+    try {
+      const wallet = ethers.Wallet.createRandom();
+      const address = wallet.address;
+  
+      const balanceUrl = `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=${etherscanApiKey}`;
+      const balanceResponse = await axios.get(balanceUrl);
+      const balance = ethers.formatEther(balanceResponse.data.result);
+  
+      const txHistoryUrl = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${etherscanApiKey}`;
+      const txHistoryResponse = await axios.get(txHistoryUrl);
+      const transactions = txHistoryResponse.data.result;
+  
+      // Pass ethers to the template
+      res.render('result.ejs', { wallet, balance, transactions, ethers });
+    } catch (error) {
+      console.error('Error occurred:', error);
+      res.status(500).send('Error generating wallet or fetching data');
+    }
+  });
 
 // Check existing wallet route
 app.get('/check-wallet', async (req, res) => {
-  try {
-    const address = req.query.address;
-
-    const balanceUrl = `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=${etherscanApiKey}`;
-    const balanceResponse = await axios.get(balanceUrl);
-    const balance = ethers.formatEther(balanceResponse.data.result);
-
-    const txHistoryUrl = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${etherscanApiKey}`;
-    const txHistoryResponse = await axios.get(txHistoryUrl);
-    const transactions = txHistoryResponse.data.result;
-
-    // Pass ethers to the template
-    res.render('result.ejs', { wallet: { address }, balance, transactions, ethers });
-  } catch (error) {
-    console.error('Error occurred:', error);
-    res.status(500).send('Error fetching data for the provided address');
-  }
-});
+    try {
+      const address = req.query.address;
+  
+      const balanceUrl = `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=${etherscanApiKey}`;
+      const balanceResponse = await axios.get(balanceUrl);
+      const balance = ethers.formatEther(balanceResponse.data.result);
+  
+      const txHistoryUrl = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${etherscanApiKey}`;
+      const txHistoryResponse = await axios.get(txHistoryUrl);
+      const transactions = txHistoryResponse.data.result;
+  
+      // Pass ethers to the template
+      res.render('result.ejs', { wallet: { address }, balance, transactions, ethers });
+    } catch (error) {
+      console.error('Error occurred:', error);
+      res.status(500).send('Error fetching data for the provided address');
+    }
+  });
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));

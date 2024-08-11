@@ -22,7 +22,7 @@
                 <strong>Hash:</strong> <%= tx.hash %><br>
                 <strong>From:</strong> <%= tx.from %><br>
                 <strong>To:</strong> <%= tx.to %><br>
-                <strong>Value:</strong> <%= ethers.utils.formatEther(tx.value) %> ETH<br>
+                <strong>Value:</strong> <%= ethers.formatEther(tx.value) %> ETH<br>
                 <strong>Date:</strong> <%= new Date(tx.timeStamp * 1000).toLocaleString() %>
             </li>
         <% }) %>
