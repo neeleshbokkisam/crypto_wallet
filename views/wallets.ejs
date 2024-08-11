@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Wallets</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h1>Manage Your Wallets</h1>
+
+    <h2>Add a New Wallet</h2>
+    <form action="/add-wallet" method="post">
+        <label for="walletName">Wallet Name:</label><br>
+        <input type="text" id="walletName" name="walletName" required><br><br>
+        <label for="privateKey">Private Key:</label><br>
+        <input type="text" id="privateKey" name="privateKey" required><br><br>
+        <input type="submit" value="Add Wallet">
+    </form>
+
+    <h2>Your Wallets</h2>
+    <% if (Object.keys(wallets).length > 0) { %>
+        <ul>
+        <% for (let name in wallets) { %>
+            <li>
+                <a href="/wallet-details?walletName=<%= name %>"><%= name %></a>
+            </li>
+        <% } %>
+        </ul>
+    <% } else { %>
+        <p>No wallets added yet.</p>
+    <% } %>
+
+    <a href="/">Go Back</a>
+</body>
+</html>

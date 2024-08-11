@@ -8,7 +8,12 @@ const port = 3000;
 
 const etherscanApiKey = 'ZH59BSCHBMA99VTDECNKTXYU23JPSJF91E';
 
+// In-memory wallet storage (for demo purposes)
+let wallets = {};
+
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
+
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -56,6 +61,53 @@ app.get('/check-wallet', async (req, res) => {
       res.status(500).send('Error fetching data for the provided address');
     }
   });
+app.post('/add-wallet', (req, res) => {
+    const { walletName, privateKey } = req.body;
+    try {
+        const wallet = new ethers.Wallet(privateKey);
+        wallets[walletName] = wallet;
+        res.redirect('/wallets');
+    } catch (error) {
+        console.error('Error adding wallet:', error);
+        res.status(400).send('Invalid private key');
+    }
+});
+
+
+  // View all wallets
+app.get('/wallets', (req, res) => {
+    res.render('wallets.ejs', { wallets });
+});
+
+// Check wallet details
+app.get('/wallet-details', async (req, res) => {
+    const walletName = req.query.walletName;
+    const wallet = wallets[walletName];
+    if (!wallet) {
+        res.status(404).send('Wallet not found');
+        return;
+    }
+
+    try {
+        const address = wallet.address;
+
+        // Fetch balance from Etherscan
+        const balanceUrl = `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=${etherscanApiKey}`;
+        const balanceResponse = await axios.get(balanceUrl);
+        const balance = ethers.formatEther(balanceResponse.data.result);
+
+        // Fetch transaction history from Etherscan
+        const txHistoryUrl = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${etherscanApiKey}`;
+        const txHistoryResponse = await axios.get(txHistoryUrl);
+        const transactions = txHistoryResponse.data.result;
+
+        res.render('wallet-details.ejs', { walletName, wallet, balance, transactions, ethers });
+    } catch (error) {
+        console.error('Error fetching wallet data:', error);
+        res.status(500).send('Error fetching data for the wallet');
+    }
+});
+
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
