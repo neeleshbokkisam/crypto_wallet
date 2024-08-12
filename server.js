@@ -4,6 +4,7 @@ const { ethers } = require('ethers');
 const axios = require('axios');
 const { Wallet } = require('./models');
 
+
 const app = express();
 const port = 3000;
 
@@ -131,6 +132,38 @@ app.post('/edit-metadata', async (req, res) => {
         console.error('Error updating metadata:', error);
         res.status(500).send('Error updating metadata');
     }
+});
+
+app.post('/send-transaction', async (req, res) => {
+    const { privateKey, toAddress, amount, gasPrice, gasLimit } = req.body;
+
+    try {
+        // Connect to the Ethereum network
+        const provider = ethers.getDefaultProvider('mainnet');
+        const wallet = new ethers.Wallet(privateKey, provider);
+
+        // Create transaction object
+        const tx = {
+            to: toAddress,
+            value: ethers.parseEther(amount),
+            gasPrice: ethers.parseUnits(gasPrice, 'gwei'),
+            gasLimit: ethers.BigNumber.from(gasLimit),
+        };
+
+        // Send the transaction
+        const transaction = await wallet.sendTransaction(tx);
+        await transaction.wait(); // Wait for transaction confirmation
+
+        res.send(`Transaction sent! Transaction Hash: ${transaction.hash}`);
+    } catch (error) {
+        console.error('Error sending transaction:', error);
+        res.status(500).send('Error sending transaction');
+    }
+});
+
+// Route to render the send transaction page
+app.get('/send-transaction', (req, res) => {
+    res.render('send-transaction');
 });
 
 

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Transaction</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h1>Send Transaction</h1>
+
+    <form action="/send-transaction" method="post">
+        <label for="toAddress">Recipient Address:</label><br>
+        <input type="text" id="toAddress" name="toAddress" required><br><br>
+
+        <label for="amount">Amount (ETH):</label><br>
+        <input type="text" id="amount" name="amount" required><br><br>
+
+        <label for="gasPrice">Gas Price (Gwei):</label><br>
+        <input type="text" id="gasPrice" name="gasPrice" value="10" required><br><br>
+
+        <label for="gasLimit">Gas Limit:</label><br>
+        <input type="text" id="gasLimit" name="gasLimit" value="21000" required><br><br>
+
+        <label for="privateKey">Private Key:</label><br>
+        <input type="password" id="privateKey" name="privateKey" required><br><br>
+
+        <input type="submit" value="Send Transaction">
+    </form>
+
+    <a href="/">Go Back</a>
+</body>
+</html>
