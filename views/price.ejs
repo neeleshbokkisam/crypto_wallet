@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Ethereum Price</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <h1>Real-Time Ethereum Price</h1>
+    <p>Current ETH/USD Price: <%= price %> USD</p>
+    <a href="/">Go Back</a>
+</body>
+</html>
+<script>
+    function fetchPrice() {
+        fetch('/price')
+            .then(response => response.text())
+            .then(html => {
+                document.body.innerHTML = html;
+            })
+            .catch(error => console.error('Error fetching price:', error));
+    }
+
+    setInterval(fetchPrice, 60000); // Update price every 60 seconds
+</script>

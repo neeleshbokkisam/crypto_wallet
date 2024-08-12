@@ -167,6 +167,42 @@ app.get('/send-transaction', (req, res) => {
 });
 
 
+let cachedPrice = null;
+let lastFetchTime = 0;
+
+async function getCryptoPrice(crypto = 'ethereum', fiat = 'usd') {
+    const currentTime = Date.now();
+    const cacheDuration = 60000; // Cache for 1 minute
+
+    if (cachedPrice && (currentTime - lastFetchTime) < cacheDuration) {
+        return cachedPrice;
+    }
+
+    try {
+        const response = await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${crypto}&vs_currencies=${fiat}`);
+        cachedPrice = response.data[crypto][fiat].toFixed(2); // Format to two decimal places
+        lastFetchTime = currentTime;
+        return cachedPrice;
+    } catch (error) {
+        console.error('Error fetching crypto price:', error);
+        return null;
+    }
+}
+
+app.get('/', async (req, res) => {
+    const price = await getCryptoPrice('ethereum', 'usd');
+    res.render('price', { price });
+});
+
+app.get('/api/price', async (req, res) => {
+    const price = await getCryptoPrice('ethereum', 'usd');
+    res.json({ price });
+});
+
+
+
+
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 

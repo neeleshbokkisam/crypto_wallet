@@ -5,9 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Wallet</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .flex-item {
+            flex: 1;
+            margin: 0 10px;
+        }
+        .flex-item input {
+            width: 100%;
+        }
+    </style>
+    <script>
+        let ethToUsdRate = 0; // Initialize with the current ETH/USD rate
+        let countdown = 60; // Start countdown at 60 seconds
+
+        async function fetchPrice() {
+            try {
+                const response = await fetch('/api/price'); // Adjust the endpoint as necessary
+                const data = await response.json();
+                ethToUsdRate = data.price;
+                document.getElementById('eth-price').textContent = ethToUsdRate + ' USD';
+                convertEthToUsd(); // Update conversion on price fetch
+                convertUsdToEth()
+            } catch (error) {
+                console.error('Error fetching price:', error);
+            }
+        }
+
+        function updateCountdown() {
+            if (countdown > 0) {
+                countdown--;
+                document.getElementById('countdown').textContent = `Next update in: ${countdown} seconds`;
+            } else {
+                reloadPrice();
+                countdown = 60; // Reset countdown
+            }
+        }
+
+        async function reloadPrice() {
+            const response = await fetch('/api/price');
+            const data = await response.json();
+            document.getElementById('eth-price').textContent = data.price + ' USD';
+        }
+
+        function convertEthToUsd() {
+            const ethValue = document.getElementById('eth-input').value;
+            const usdValue = (ethValue * ethToUsdRate).toFixed(2);
+            document.getElementById('usd-output').textContent = usdValue + ' USD';
+        }
+
+        function convertUsdToEth() {
+            const usdValue = parseFloat(document.getElementById('usd-input').value);
+            if (!isNaN(usdValue)) {
+                const ethValue = (usdValue / ethToUsdRate).toFixed(6); // Adjust the decimal places as needed
+                document.getElementById('eth-output').textContent = ethValue + ' ETH';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPrice(); // Fetch price when page loads
+            setInterval(updateCountdown, 1000); // Update countdown every second
+        });
+        
+    </script>
+
 </head>
 <body>
     <h1>Welcome to the Crypto Wallet App</h1>
+
+    <div class="flex-container">
+        <div class="flex-item">
+            <h2>Real-Time Ethereum Price</h2>
+            <p>Current ETH/USD Price: <span id="eth-price">Loading...</span></p>
+            <p id="countdown">Next update in: 60 seconds</p>
+            <button onclick="fetchPrice()">Reload Price Now</button>
+        </div>
+        <div class="flex-item">
+            <h2>Ethereum to USD Converter</h2>
+            <p>Enter Ethereum Value:</p>
+            <input type="number" id="eth-input" oninput="convertEthToUsd()" step="0.01" placeholder="Enter ETH amount">
+            <p>Equivalent USD Value: <span id="usd-output">0.00 USD</span></p>
+        </div>
+        <div class="flex-item">
+            <h2>USD to Ethereum Converter</h2>
+            <p>Enter USD Value:</p>
+            <input type="number" id="usd-input" oninput="convertUsdToEth()" step="0.01" placeholder="Enter USD amount">
+            <p>Equivalent Ethereum Value: <span id="eth-output">0.000000 ETH</span></p>
+        </div>
+    </div>
 
     <h2>Generate a New Wallet</h2>
     <a href="/wallet">Generate a Wallet</a>
@@ -27,6 +117,9 @@
     <a href="/send-transaction">
         Go to Send Transaction Page
     </a>
+
+    
+
 </form>
 </body>
 </html>
