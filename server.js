@@ -1,4 +1,5 @@
 const express = require('express');
+
 const path = require('path');
 const { ethers } = require('ethers');
 const axios = require('axios');
@@ -6,7 +7,8 @@ const { Wallet } = require('./models');
 
 
 const app = express();
-const port = 3000;
+// Use the PORT environment variable if available, otherwise fallback to a default port
+const PORT = process.env.PORT || 3000;
 
 const etherscanApiKey = 'ZH59BSCHBMA99VTDECNKTXYU23JPSJF91E';
 
@@ -206,6 +208,6 @@ app.get('/api/price', async (req, res) => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
